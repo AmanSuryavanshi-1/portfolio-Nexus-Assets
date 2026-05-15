@@ -143,3 +143,26 @@ git push origin main
 *   **File Naming:** Use kebab-case or snake_case (e.g., `project-dashboard.webp`). Avoid spaces.
 *   **Optimization:** Convert PNG/JPG to WebP for smaller payloads and better Core Web Vitals.
 *   **Version Tracking:** Maintain a comment in documentation noting current cache-bust version if frequently updated.
+
+---
+
+## Local Development: Nested Git Architecture
+
+> [!IMPORTANT]
+> The `public/Project` folder operates as a **Nested Git Repository**. It has its own isolated `.git` folder that tracks and pushes exclusively to the `portfolio-assets` repository on GitHub.
+
+### Why It Is Set Up This Way
+To separate heavy image files from the Next.js website codebase while allowing seamless editing, the media assets are stored inside the `public/Project` folder. However, they are tracked by a completely independent repository (`portfolio-assets`). 
+
+### The Nearest `.git` Rule
+When executing Git commands locally, Git traverses upward from your current directory to find the nearest `.git` folder:
+- **Terminal in `.../public/Project/...`**: Git commits to the `portfolio-assets` repository.
+- **Terminal in `.../AmanSuryavanshi.dev/src/...`**: Git commits to the main `AmanSuryavanshi.dev` repository.
+
+### Preventing Repository Bloat
+To prevent the main website repository from accidentally tracking the nested images (which causes severe repository bloat and slow clone times), the `public/Project/` folder is explicitly ignored in the parent's `.gitignore` (`AmanSuryavanshi.dev/.gitignore`). 
+
+This guarantees that:
+1. The `portfolio-assets` repo handles all the heavy images.
+2. The `AmanSuryavanshi.dev` repo stays lightweight and fast.
+3. The jsDelivr CDN workflow remains 100% unaffected.
